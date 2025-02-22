@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Video Player</title>
+    <style>
+        #video-container {
+            width: 640px;
+            height: 360px;
+            margin: 20px auto;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <video id="video-player" autoplay controls poster=""></video>
+    </div>
+
+    <!-- Include Shaka Player library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.8/shaka-player.compiled.js"></script>
+    
+    <script>
+        // Wait for the document to load
+        document.addEventListener('DOMContentLoaded', initPlayer);
+
+        async function initPlayer() {
+            // Get video element
+            const video = document.getElementById('video-player');
+            const player = new shaka.Player(video);
+
+            // Error handling
+            player.addEventListener('error', onErrorEvent);
+
+            function onErrorEvent(event) {
+                console.error('Error code', event.detail.code, 'object', event.detail);
+            }
+
+            // Configure DRM
+            player.configure({
+                drm: {
+                    clearKeys: { 
+                        '8bcfc55359e24bd7ad1c5560a96ddd3c': "b5dcf721ab522af92a9d3bf0bd55b596"
+                    },
+                    servers: {
+                    'com.widevine.alpha': 'https://www.elahmad.com/tv/widevine/shahid_6.php' 
+                    }
+                }
+            });
+
+            try {
+                // Load the video// 
+
+//                await player.load('https://ssc-1-enc.edgenextcdn.net/out/v1/c696e4819b55414388a1a487e8a45ca1/index.mpd');
+                await player.load('https://ssc-2-enc.edgenextcdn.net/out/v1/a16db2ec338a445a82d9c541cc9293f9/index.mpd');
+                console.log('Video loaded successfully');
+
+                // Apply additional settings
+                video.autoplay = true;
+                video.pip = true;
+
+            } catch (e) {
+                console.error('Error loading video:', e);
+            }
+        }
+    </script>
+</body>
+</html>
